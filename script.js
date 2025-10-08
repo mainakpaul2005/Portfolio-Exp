@@ -1,44 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- CUSTOM CURSOR ---
-    const cursorInner = document.querySelector('.cursor--inner');
-    const cursorOuter = document.querySelector('.cursor--outer');
-    const interactiveElements = document.querySelectorAll('a, .card');
-    
-    let mouse = { x: -100, y: -100 }; // Current mouse position
-    let target = { x: -100, y: -100 }; // Target mouse position
-    const speed = 0.1; // Smoothing factor
-
-    // Update mouse position
-    window.addEventListener('mousemove', (e) => {
-        target.x = e.clientX;
-        target.y = e.clientY;
-    });
-
-    // Animate cursor using requestAnimationFrame for smoothness
-    const animateCursor = () => {
-        // Linear interpolation for smooth movement
-        mouse.x += (target.x - mouse.x) * speed;
-        mouse.y += (target.y - mouse.y) * speed;
-
-        cursorInner.style.transform = `translate(${mouse.x - 4}px, ${mouse.y - 4}px)`;
-        cursorOuter.style.transform = `translate(${mouse.x - 20}px, ${mouse.y - 20}px)`;
-
-        requestAnimationFrame(animateCursor);
-    };
-
-    animateCursor();
-
-    // Cursor hover effects
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cursorOuter.classList.add('cursor--hover');
-        });
-        el.addEventListener('mouseleave', () => {
-            cursorOuter.classList.remove('cursor--hover');
-        });
-    });
-
     // --- AURORA EFFECT ON CARDS ---
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
