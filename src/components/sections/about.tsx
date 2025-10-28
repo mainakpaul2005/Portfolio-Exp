@@ -21,13 +21,20 @@ const skills = [
 	{ name: 'HTML', category: 'frontend' },
 	{ name: 'CSS', category: 'frontend' },
 	{ name: 'Tailwind CSS', category: 'frontend' },
+	{ name: 'shadcn/ui', category: 'frontend' },
 	{ name: 'Node.js', category: 'backend' },
 	{ name: 'Express.js', category: 'backend' },
 	{ name: 'MySQL', category: 'backend' },
+	{ name: 'Firebase', category: 'backend' },
+	{ name: 'Firestore', category: 'backend' },
 	{ name: 'Git', category: 'tools' },
-	{ name: 'Docker', category: 'tools' },
-	{ name: 'AWS', category: 'tools' },
+	{ name: 'GitHub', category: 'tools' },
 	{ name: 'Vercel', category: 'tools' },
+	{ name: 'Firebase Deploy', category: 'tools' },
+	{ name: 'Email.js', category: 'tools' },
+	{ name: 'Figma (UI Design)', category: 'tools' },
+	{ name: 'Gemini API', category: 'tools' },
+	{ name: 'ChatGPT (Integration)', category: 'tools' },
 ]
 
 function GithubContributionsGrid() {
