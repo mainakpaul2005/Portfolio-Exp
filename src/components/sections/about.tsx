@@ -1,12 +1,17 @@
 "use client"
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
 import { siteConfig } from '@/lib/constants'
 import Stack from '@/components/Stack'
-import LogoLoop from '@/components/LogoLoop'
 import { techStackIcons } from '@/lib/techStackIcons'
+
+// Dynamic import for LogoLoop to avoid SSR issues
+const LogoLoop = dynamic(() => import('@/components/LogoLoop'), {
+  ssr: false
+})
 
 const skills = [
 	{ name: 'React', category: 'frontend' },

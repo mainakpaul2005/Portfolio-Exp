@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import dynamic from 'next/dynamic'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Send } from 'lucide-react'
@@ -10,8 +11,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import PixelTransition from '@/components/PixelTransition'
 import { contactFormSchema, type ContactFormData } from '@/lib/validations'
+
+// Dynamic import for PixelTransition to avoid SSR issues
+const PixelTransition = dynamic(() => import('@/components/PixelTransition'), {
+  ssr: false
+})
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
