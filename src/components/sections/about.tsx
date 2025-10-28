@@ -2,8 +2,8 @@
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
-import { useEffect, useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useEffect, useState, useRef } from 'react'
 import { siteConfig } from '@/lib/constants'
 import Stack from '@/components/Stack'
 import { techStackIcons } from '@/lib/techStackIcons'
@@ -45,6 +45,11 @@ function GithubContributionsGrid() {
 	const year = new Date().getFullYear()
 	const githubUsername = (siteConfig.links.github?.split('/').filter(Boolean).pop()) || 'mainakpaul2005'
 
+	// Initialize scroll ref and current month calculation at the top
+	const scrollRef = useRef<HTMLDivElement>(null)
+	const currentDate = new Date()
+	const currentMonth = currentDate.getMonth() // 0-11
+
 	useEffect(() => {
 		// Only fetch on client side
 		if (typeof window === 'undefined') return;
@@ -61,7 +66,38 @@ function GithubContributionsGrid() {
 				setLoading(false)
 			})
 			.catch(() => setLoading(false))
-	}, [])
+	}, [githubUsername])
+
+	// Auto-scroll effect - separate from data fetching
+	useEffect(() => {
+		if (!loading && days.length > 0 && scrollRef.current) {
+			// Calculate weeks and find current month position
+			let padded: (Day | null)[] = []
+			if (days.length) {
+				const firstWeekday = new Date(days[0].date).getDay()
+				padded = Array(firstWeekday).fill(null).concat(days)
+				const remainder = padded.length % 7
+				if (remainder !== 0) padded = padded.concat(Array(7 - remainder).fill(null))
+			}
+			const weeks: (Day | null)[][] = []
+			for (let i = 0; i < padded.length; i += 7) {
+				weeks.push(padded.slice(i, i + 7))
+			}
+
+			const currentWeekIndex = weeks.findIndex(week => {
+				const weekDate = week.find(d => d)?.date
+				if (!weekDate) return false
+				const weekMonth = new Date(weekDate).getMonth()
+				return weekMonth === currentMonth
+			})
+
+			if (currentWeekIndex >= 0) {
+				const weekWidth = 20 // approximate width of each week (16px + gap)
+				const scrollPosition = Math.max(0, (currentWeekIndex - 8) * weekWidth)
+				scrollRef.current.scrollLeft = scrollPosition
+			}
+		}
+	}, [loading, days, currentMonth])
 
 	if (loading) {
 		return <div className="mt-8 text-center text-muted-foreground">Loading GitHub contributions...</div>
@@ -106,70 +142,97 @@ function GithubContributionsGrid() {
 		const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 		return (
-			<div className="mt-8">
-				<div className="mb-2 flex items-center justify-between">
-					<h3 className="text-xl font-semibold">GitHub Contributions</h3>
-					<a
-						href={`https://github.com/users/${githubUsername}/contributions?from=${year}-01-01&to=${year}-12-31`}
-						target="_blank"
-						rel="noreferrer"
-						className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
-					>
-						View on GitHub
-					</a>
-				</div>
-				<div className="mb-3 text-muted-foreground text-sm">
-					Total contributions in {year}: {raw?.total?.[String(year)] ?? 0}
-				</div>
-				<div className="overflow-x-auto">
-					<div className="inline-block">
-						{/* Month labels along the top */}
-						<div className="ml-8 mb-1 flex gap-1 text-[10px] leading-none text-muted-foreground select-none">
-							{monthLabels.map((label, i) => (
-								<div key={i} className="w-3.5 sm:w-4 text-center">{label}</div>
-							))}
+			<div className="flex justify-center mt-8">
+				<Card className="group relative flex flex-col overflow-hidden border-2 border-foreground/10 bg-card/20 backdrop-blur-2xl transition-all duration-300 hover:border-foreground/30 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 w-full max-w-4xl">
+					{/* Gradient overlay on hover */}
+					<div className="absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-foreground/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none z-10" />
+					
+					{/* Corner accent */}
+					<div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-foreground/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+					
+					<CardHeader className="relative z-20 pb-4">
+						<div className="flex items-center justify-between">
+							<CardTitle className="text-xl group-hover:text-foreground transition-colors duration-300">GitHub Contributions</CardTitle>
+							<a
+								href={`https://github.com/users/${githubUsername}/contributions?from=${year}-01-01&to=${year}-12-31`}
+								target="_blank"
+								rel="noreferrer"
+								className="inline-flex items-center rounded-lg border-2 border-foreground/20 bg-background/80 backdrop-blur-sm px-3 py-1 text-xs font-semibold transition-all duration-200 hover:border-foreground hover:bg-foreground hover:text-background"
+							>
+								View on GitHub
+							</a>
 						</div>
-						<div className="flex">
-							{/* Weekday labels on the left (show Mon, Wed, Fri) */}
-							<div className="mr-2 hidden sm:flex flex-col gap-1 text-[10px] leading-none text-muted-foreground select-none">
-								{Array.from({ length: 7 }, (_, i) => (
-									<div key={i} className="h-3.5 sm:h-4 flex items-center">
-										{(i === 1 || i === 3 || i === 5) ? weekdayLabels[i] : ''}
-									</div>
-								))}
+						<CardDescription className="group-hover:text-muted-foreground/80 transition-colors duration-300">
+							Total contributions in {year}: {raw?.total?.[String(year)] ?? 0}
+						</CardDescription>
+					</CardHeader>
+					
+					<CardContent className="flex-1 relative z-20 space-y-4">
+						{/* Legend */}
+						<div className="flex items-center justify-between">
+							<div className="flex items-center gap-2 text-[10px] text-muted-foreground select-none">
+								<span>Less</span>
+								<div className="flex items-center gap-1">
+									{levelClasses.map((cls, i) => (
+										<div key={i} className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[2px] border border-border ${cls}`} />
+									))}
+								</div>
+								<span>More</span>
 							</div>
-										{/* Grid: rows = days, columns = weeks */}
-							<div className="flex flex-col gap-1" role="grid" aria-label={`GitHub contributions for ${githubUsername} in ${year}`}>
-								{Array.from({ length: 7 }, (_, dayIdx) => (
-									<div key={dayIdx} className="flex gap-1" role="row">
-										{weeks.map((week, weekIdx) => (
-											week[dayIdx] ? (
-												<div
-													key={weekIdx}
-													title={`${week[dayIdx]!.count} contributions on ${week[dayIdx]!.date}`}
-													className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[2px] border border-border ${levelClasses[Math.max(0, Math.min(4, week[dayIdx]!.level))]} hover:ring-1 hover:ring-foreground/30 transition-shadow`}
-													aria-label={`${week[dayIdx]!.count} contributions on ${week[dayIdx]!.date}`}
-													tabIndex={0}
-													role="gridcell"
-												/>
-											) : <div key={weekIdx} className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[2px] border border-transparent" role="gridcell" aria-hidden="true" />
+							<div className="text-xs text-muted-foreground">
+								Focused on {new Date().toLocaleString('en-US', { month: 'long' })} • Scroll to explore
+							</div>
+						</div>
+
+						{/* Contributions Grid */}
+						<div className="flex justify-center">
+							<div ref={scrollRef} className="overflow-x-auto scroll-smooth scrollbar-hide max-w-full">
+								<div className="inline-block">
+									{/* Month labels along the top */}
+									<div className="mb-1 flex gap-1 text-[10px] leading-none text-muted-foreground select-none">
+										{/* Weekday header space */}
+										<div className="w-16 sm:w-20"></div>
+										{monthLabels.map((label, i) => (
+											<div key={i} className="w-3.5 sm:w-4 text-center">{label}</div>
 										))}
 									</div>
-								))}
+									<div className="flex">
+										{/* Weekday labels on the left */}
+										<div className="mr-2 flex flex-col gap-1 text-[10px] leading-none text-muted-foreground select-none w-14 sm:w-18">
+											{Array.from({ length: 7 }, (_, i) => (
+												<div key={i} className="h-3.5 sm:h-4 flex items-center justify-end pr-1">
+													{weekdayLabels[i]}
+												</div>
+											))}
+										</div>
+										{/* Grid: rows = days, columns = weeks */}
+										<div className="flex flex-col gap-1" role="grid" aria-label={`GitHub contributions for ${githubUsername} in ${year}`}>
+											{Array.from({ length: 7 }, (_, dayIdx) => (
+												<div key={dayIdx} className="flex gap-1" role="row">
+													{weeks.map((week, weekIdx) => (
+														week[dayIdx] ? (
+															<div
+																key={weekIdx}
+																title={`${week[dayIdx]!.count} contributions on ${week[dayIdx]!.date}`}
+																className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[2px] border border-border ${levelClasses[Math.max(0, Math.min(4, week[dayIdx]!.level))]} hover:ring-1 hover:ring-foreground/30 transition-shadow`}
+																aria-label={`${week[dayIdx]!.count} contributions on ${week[dayIdx]!.date}`}
+																tabIndex={0}
+																role="gridcell"
+															/>
+														) : <div key={weekIdx} className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[2px] border border-transparent" role="gridcell" aria-hidden="true" />
+													))}
+												</div>
+											))}
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
-						{/* Legend */}
-						<div className="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground select-none">
-							<span>Less</span>
-							<div className="flex items-center gap-1">
-								{levelClasses.map((cls, i) => (
-									<div key={i} className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[2px] border border-border ${cls}`} />
-								))}
-							</div>
-							<span>More</span>
-						</div>
-					</div>
-				</div>
+					</CardContent>
+					
+					{/* Bottom shine effect */}
+					<div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+				</Card>
 			</div>
 		)
 }
@@ -239,17 +302,55 @@ export function About() {
 
 							{/* Skills */}
 							<div className="mt-8">
-								<h3 className="mb-4 text-xl font-semibold">Skills & Technologies</h3>
-								<div className="flex flex-wrap gap-2">
-									{skills.map((skill) => (
-										<Badge
-											key={skill.name}
-											variant="secondary"
-											className="px-3 py-1 text-sm"
-										>
-											{skill.name}
-										</Badge>
-									))}
+								<h3 className="mb-6 text-xl font-semibold">Skills & Technologies</h3>
+								<div className="space-y-6">
+									{/* Frontend Skills */}
+									<div>
+										<h4 className="mb-3 text-lg font-medium text-primary">Frontend Development</h4>
+										<div className="flex flex-wrap gap-2">
+											{skills.filter(skill => skill.category === 'frontend').map((skill) => (
+												<Badge
+													key={skill.name}
+													variant="secondary"
+													className="px-3 py-1 text-sm bg-muted/60 text-foreground hover:bg-muted/80 dark:bg-muted/40 dark:hover:bg-muted/60 border border-white/20 dark:border-white/10"
+												>
+													{skill.name}
+												</Badge>
+											))}
+										</div>
+									</div>
+
+									{/* Backend Skills */}
+									<div>
+										<h4 className="mb-3 text-lg font-medium text-primary">Backend Development</h4>
+										<div className="flex flex-wrap gap-2">
+											{skills.filter(skill => skill.category === 'backend').map((skill) => (
+												<Badge
+													key={skill.name}
+													variant="secondary"
+													className="px-3 py-1 text-sm bg-muted/60 text-foreground hover:bg-muted/80 dark:bg-muted/40 dark:hover:bg-muted/60 border border-white/20 dark:border-white/10"
+												>
+													{skill.name}
+												</Badge>
+											))}
+										</div>
+									</div>
+
+									{/* Tools & Others */}
+									<div>
+										<h4 className="mb-3 text-lg font-medium text-primary">Tools & Others</h4>
+										<div className="flex flex-wrap gap-2">
+											{skills.filter(skill => skill.category === 'tools').map((skill) => (
+												<Badge
+													key={skill.name}
+													variant="secondary"
+													className="px-3 py-1 text-sm bg-muted/60 text-foreground hover:bg-muted/80 dark:bg-muted/40 dark:hover:bg-muted/60 border border-white/20 dark:border-white/10"
+												>
+													{skill.name}
+												</Badge>
+											))}
+										</div>
+									</div>
 								</div>
 							</div>
 
