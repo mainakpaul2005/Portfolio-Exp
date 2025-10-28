@@ -13,7 +13,7 @@ const projects: Project[] = [
     title: 'E-Commerce Platform',
     description:
       'A full-featured e-commerce platform with cart, checkout, and payment integration.',
-    image: '/projects/project-1.jpg',
+    image: '/projects/project-1.svg',
     tags: ['Next.js', 'TypeScript', 'Stripe', 'PostgreSQL'],
     github: 'https://github.com/yourusername/ecommerce',
     demo: 'https://ecommerce-demo.com',
@@ -24,7 +24,7 @@ const projects: Project[] = [
     title: 'Task Management App',
     description:
       'A collaborative task management application with real-time updates.',
-    image: '/projects/project-2.jpg',
+    image: '/projects/project-2.svg',
     tags: ['React', 'Node.js', 'Socket.io', 'MongoDB'],
     github: 'https://github.com/yourusername/task-manager',
     demo: 'https://task-manager-demo.com',
@@ -35,7 +35,7 @@ const projects: Project[] = [
     title: 'AI Content Generator',
     description:
       'An AI-powered content generation tool using OpenAI API.',
-    image: '/projects/project-3.jpg',
+    image: '/projects/project-3.svg',
     tags: ['Next.js', 'OpenAI', 'Tailwind', 'Vercel'],
     github: 'https://github.com/yourusername/ai-generator',
     demo: 'https://ai-generator-demo.com',

@@ -168,7 +168,7 @@ export function Navbar() {
             <div className="hidden md:flex items-center">
               <Link href="/#about" className="inline-flex items-center justify-center rounded-full border border-border p-[2px] hover:ring-2 hover:ring-foreground/20 transition">
                 <Image
-                  src="/profile.jpg"
+                  src="/profile1.jpg"
                   alt={`${siteConfig.name} avatar`}
                   width={28}
                   height={28}
