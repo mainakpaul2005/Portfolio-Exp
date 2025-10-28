@@ -1,6 +1,52 @@
 import { motion, useMotionValue, useTransform } from 'motion/react';
 import { useState } from 'react';
+import Image from 'next/image';
 import './Stack.css';
+
+interface CardImageProps {
+  src: string;
+  alt: string;
+  cardDimensions: { width: number; height: number };
+  cardId: number;
+}
+
+function CardImage({ src, alt, cardDimensions, cardId }: CardImageProps) {
+  const [imageError, setImageError] = useState(false);
+
+  const fallbackSvg = `data:image/svg+xml;base64,${btoa(`
+    <svg width="${cardDimensions.width}" height="${cardDimensions.height}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="hsl(var(--muted))"/>
+      <circle cx="50%" cy="40%" r="15%" fill="hsl(var(--muted-foreground))" opacity="0.3"/>
+      <rect x="25%" y="60%" width="50%" height="30%" rx="10" fill="hsl(var(--muted-foreground))" opacity="0.3"/>
+      <text x="50%" y="95%" text-anchor="middle" dy=".3em" fill="hsl(var(--muted-foreground))" font-family="Arial, sans-serif" font-size="14">
+        Photo ${cardId}
+      </text>
+    </svg>
+  `)}`;
+
+  if (imageError) {
+    return (
+      <Image
+        src={fallbackSvg}
+        alt={alt}
+        fill
+        className="card-image object-cover"
+        sizes={`${cardDimensions.width}px`}
+      />
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className="card-image object-cover"
+      sizes={`${cardDimensions.width}px`}
+      onError={() => setImageError(true)}
+    />
+  );
+}
 
 interface CardRotateProps {
   children: React.ReactNode;
@@ -109,24 +155,14 @@ export default function Stack({
                 height: cardDimensions.height
               }}
             >
-              <img 
-                src={card.img} 
-                alt={`card-${card.id}`} 
-                className="card-image"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `data:image/svg+xml;base64,${btoa(`
-                    <svg width="${cardDimensions.width}" height="${cardDimensions.height}" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="100%" height="100%" fill="hsl(var(--muted))"/>
-                      <circle cx="50%" cy="40%" r="15%" fill="hsl(var(--muted-foreground))" opacity="0.3"/>
-                      <rect x="25%" y="60%" width="50%" height="30%" rx="10" fill="hsl(var(--muted-foreground))" opacity="0.3"/>
-                      <text x="50%" y="95%" text-anchor="middle" dy=".3em" fill="hsl(var(--muted-foreground))" font-family="Arial, sans-serif" font-size="14">
-                        Photo ${card.id}
-                      </text>
-                    </svg>
-                  `)}`;
-                }}
-              />
+              <div className="relative w-full h-full overflow-hidden rounded-lg">
+                <CardImage
+                  src={card.img}
+                  alt={`Photo ${card.id}`}
+                  cardDimensions={cardDimensions}
+                  cardId={card.id}
+                />
+              </div>
             </motion.div>
           </CardRotate>
         );
