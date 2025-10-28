@@ -94,9 +94,9 @@ export function Hero() {
               <Instagram className="h-6 w-6" />
             </a>
             <a
-              href={`mailto:${siteConfig.links.email}`}
+              href="#contact"
               className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-[#f59e0b]/30 bg-background text-[#f59e0b] transition-all duration-200 hover:border-[#f59e0b] hover:bg-[#f59e0b] hover:text-white hover:shadow-xl hover:scale-110 active:scale-95"
-              aria-label="Email"
+              aria-label="Contact"
             >
               <Mail className="h-6 w-6" />
             </a>
