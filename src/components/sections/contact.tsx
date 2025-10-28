@@ -86,23 +86,28 @@ export function Contact() {
   }
 
   return (
-    <section id="contact" className="py-24 sm:py-32">
+    <section id="contact" className="py-16 sm:py-20 lg:py-24">
       <div className="container px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mb-16 text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Get In Touch
-          </h2>
+        <div className="mx-auto max-w-7xl">
+          {/* Section Header */}
+          <div className="mb-12 sm:mb-16 lg:mb-20 text-center">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+              Get In Touch
+            </h2>
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Ready to start your next project? I&apos;d love to hear from you.
+            </p>
+          </div>
           <p className="mt-4 text-lg text-muted-foreground">
             Have a question or want to work together? Drop me a message!
           </p>
         </div>
 
         {/* Layout: PixelTransition image (left) + Contact Card (right) */}
-        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
-          {/* Image transition area - left side on large screens */}
-          <div className="hidden lg:flex lg:items-center lg:justify-center p-6">
-            <div className="w-full max-w-sm mx-auto">
+        <div className="grid items-start gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-20">
+          {/* Image transition area - hidden on mobile, visible on large screens */}
+          <div className="hidden lg:flex lg:items-center lg:justify-center p-4 lg:p-6">
+            <div className="w-full max-w-sm xl:max-w-md mx-auto">
               <PixelTransition
                 firstContent={
                   <img 
@@ -159,54 +164,60 @@ export function Contact() {
             </div>
           </div>
 
-          {/* Contact Form Card - right aligned on large screens */}
-          <div className="w-full max-w-xl lg:justify-self-end lg:pr-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>Send me a message</CardTitle>
-                <CardDescription>
+          {/* Contact Form Card - right aligned on large screens, full width on mobile */}
+          <div className="w-full max-w-none sm:max-w-2xl lg:max-w-xl mx-auto lg:mx-0 lg:justify-self-end">
+            <Card className="shadow-lg border-border/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="space-y-1 pb-4 sm:pb-6">
+                <CardTitle className="text-xl sm:text-2xl">Send me a message</CardTitle>
+                <CardDescription className="text-sm sm:text-base">
                   I&apos;ll get back to you as soon as possible
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="John Doe"
-                    {...register('name')}
-                    disabled={isSubmitting}
-                  />
-                  {errors.name && (
-                    <p className="text-sm text-destructive">{errors.name.message}</p>
-                  )}
-                </div>
+              <CardContent className="pt-0">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+                {/* Name & Email Row - side by side on larger screens */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  {/* Name */}
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-sm font-medium">Name</Label>
+                    <Input
+                      id="name"
+                      placeholder="John Doe"
+                      {...register('name')}
+                      disabled={isSubmitting}
+                      className="h-10 sm:h-11"
+                    />
+                    {errors.name && (
+                      <p className="text-sm text-destructive">{errors.name.message}</p>
+                    )}
+                  </div>
 
-                {/* Email */}
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="john@example.com"
-                    {...register('email')}
-                    disabled={isSubmitting}
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email.message}</p>
-                  )}
+                  {/* Email */}
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
+                      {...register('email')}
+                      disabled={isSubmitting}
+                      className="h-10 sm:h-11"
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-destructive">{errors.email.message}</p>
+                    )}
+                  </div>
                 </div>
 
                 {/* Subject */}
                 <div className="space-y-2">
-                  <Label htmlFor="subject">Subject</Label>
+                  <Label htmlFor="subject" className="text-sm font-medium">Subject</Label>
                   <Input
                     id="subject"
                     placeholder="Project Inquiry"
                     {...register('subject')}
                     disabled={isSubmitting}
+                    className="h-10 sm:h-11"
                   />
                   {errors.subject && (
                     <p className="text-sm text-destructive">
@@ -217,11 +228,12 @@ export function Contact() {
 
                 {/* Message */}
                 <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
+                  <Label htmlFor="message" className="text-sm font-medium">Message</Label>
                   <Textarea
                     id="message"
                     placeholder="Your message here..."
-                    rows={5}
+                    rows={4}
+                    className="min-h-[100px] sm:min-h-[120px] resize-y"
                     {...register('message')}
                     disabled={isSubmitting}
                   />
@@ -235,20 +247,20 @@ export function Contact() {
                 {/* Submit Status */}
                 {submitStatus.type && (
                   <div
-                    className={`rounded-md p-4 ${
+                    className={`rounded-md p-3 sm:p-4 text-sm ${
                       submitStatus.type === 'success'
                         ? 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                         : 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-400'
                     }`}
                   >
-                    <p className="text-sm">{submitStatus.message}</p>
+                    <p>{submitStatus.message}</p>
                   </div>
                 )}
 
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full h-11 sm:h-12 text-sm sm:text-base font-medium"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
