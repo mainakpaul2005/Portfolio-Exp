@@ -65,40 +65,40 @@ export function Hero() {
           </div>
           
           {/* Social Links */}
-          <div className="mt-12 flex items-center justify-center gap-4 animate-fade-in [animation-delay:1000ms]">
+          <div className="mt-12 flex items-center justify-center gap-6 animate-fade-in [animation-delay:1000ms]">
             <a
               href={siteConfig.links.github}
               target="_blank"
               rel="noreferrer"
-                className="flex h-11 w-11 items-center justify-center rounded-lg border-2 border-[#1E3A8A]/20 bg-background text-[#1E3A8A] transition-all duration-200 hover:border-[#1E3A8A] hover:bg-[#1E3A8A] hover:text-white hover:shadow-lg"
+              className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-[#6366f1]/30 bg-background text-[#6366f1] transition-all duration-200 hover:border-[#6366f1] hover:bg-[#6366f1] hover:text-white hover:shadow-xl hover:scale-110 active:scale-95"
               aria-label="GitHub"
             >
-              <Github className="h-5 w-5" />
+              <Github className="h-6 w-6" />
             </a>
             <a
               href={siteConfig.links.linkedin}
               target="_blank"
               rel="noreferrer"
-                className="flex h-11 w-11 items-center justify-center rounded-lg border-2 border-[#0A66C2]/20 bg-background text-[#0A66C2] transition-all duration-200 hover:border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white hover:shadow-lg"
+              className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-[#0ea5e9]/30 bg-background text-[#0ea5e9] transition-all duration-200 hover:border-[#0ea5e9] hover:bg-[#0ea5e9] hover:text-white hover:shadow-xl hover:scale-110 active:scale-95"
               aria-label="LinkedIn"
             >
-              <Linkedin className="h-5 w-5" />
+              <Linkedin className="h-6 w-6" />
             </a>
             <a
               href={siteConfig.links.instagram}
               target="_blank"
               rel="noreferrer"
-                className="flex h-11 w-11 items-center justify-center rounded-lg border-2 border-[#E1306C]/20 bg-background text-[#E1306C] transition-all duration-200 hover:border-[#E1306C] hover:bg-[#E1306C] hover:text-white hover:shadow-lg"
+              className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-[#ec4899]/30 bg-background text-[#ec4899] transition-all duration-200 hover:border-[#ec4899] hover:bg-[#ec4899] hover:text-white hover:shadow-xl hover:scale-110 active:scale-95"
               aria-label="Instagram"
             >
-              <Instagram className="h-5 w-5" />
+              <Instagram className="h-6 w-6" />
             </a>
             <a
               href={`mailto:${siteConfig.links.email}`}
-                className="flex h-11 w-11 items-center justify-center rounded-lg border-2 border-[#EA4335]/20 bg-background text-[#EA4335] transition-all duration-200 hover:border-[#EA4335] hover:bg-[#EA4335] hover:text-white hover:shadow-lg"
+              className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-[#f59e0b]/30 bg-background text-[#f59e0b] transition-all duration-200 hover:border-[#f59e0b] hover:bg-[#f59e0b] hover:text-white hover:shadow-xl hover:scale-110 active:scale-95"
               aria-label="Email"
             >
-              <Mail className="h-5 w-5" />
+              <Mail className="h-6 w-6" />
             </a>
           </div>
         </div>
